@@ -10,10 +10,13 @@ if (mysqli_connect_errno()) {
 
 $subject = array();
 $result = mysqli_query($con, "SELECT * FROM courses");
+
 while($row = mysqli_fetch_array($result)) {
     $course = $row['course_id'];
     $description = $row['course_desc'];
-    $keyword = substr($course,0,2);
+    preg_match('/^[A-Z]+/', $course, $matches);
+    $keyword = $matches[0];
+    echo $keyword;
     //echo $course . $description;
     if (array_key_exists($keyword, $subject)) {
         $subject[$keyword] = $subject[$keyword] . " " . $description;
@@ -25,7 +28,8 @@ while($row = mysqli_fetch_array($result)) {
 $word_map = array();
 $nouse = array();
 foreach ($subject as $course=>$description) {
-    $keywords = preg_split("/[^a-zA-Z0-9]+/", strtolower($description));
+    //$keywords = preg_split("/[^a-zA-Z0-9]+/", strtolower($description));
+    $keywords = preg_split("/[^a-zA-Z]+/", $description);
 
     foreach($keywords as $word) {
         if (array_key_exists($word, $word_map)) {
@@ -33,7 +37,7 @@ foreach ($subject as $course=>$description) {
                 array_push($nouse, $word);
             }
         } else {
-        $word_map[$word] = $course;
+            $word_map[$word] = $course;
         }
     }
 }
@@ -50,8 +54,6 @@ foreach ($word_map as $common_word=>$course_name)
         echo "";
     } else {
     // print "<p>" . $common_word . "=>" . $course_name . '</p>';
-     
-    
         if (array_key_exists($course_name, $course_key)) {
             array_push($course_key[$course_name], $common_word);
         } else {
@@ -59,6 +61,7 @@ foreach ($word_map as $common_word=>$course_name)
         }
     }
 }
+
 foreach ($course_key as $c_name => $key_words) {
     //print "<p>" .$c_name . ': ';
     echo $c_name . ":";
@@ -67,6 +70,7 @@ foreach ($course_key as $c_name => $key_words) {
         echo $key . " ";
     }
     //print '</p>';
-    echo " | ";
+    echo "<br/>";
 }
+
 ?>
