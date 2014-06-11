@@ -17,11 +17,12 @@ $dept_words = array();
 
 while($row = mysqli_fetch_array($result)) {
     $course = $row['course_id'];
-    $description = $row['course_desc'];
+    $description = strtolower($row['course_desc']);
     preg_match('/^[A-Z]+/', $course, $matches);
     $dept = $matches[0];
     //echo $keyword;
-    $keywords = preg_split("/[^a-zA-Z\-]+/", $description);
+    //$keywords = preg_split("/[^a-zA-Z\-]+/", $description);
+    $keywords = preg_split("/[^a-z\-]+/", $description);
     //echo $course . $description;
     if (array_key_exists($dept, $subject)) {
         $course_count[$dept] = $course_count[$dept] + 1; 
@@ -46,17 +47,47 @@ while($row = mysqli_fetch_array($result)) {
         //echo $word . " " . $global_set[$word] . " " . $subject[$dept][$word] . " ";
     }
 }
-$query = "breadth-first";
-$dept = "CS";
-echo "size of vocabulary " . sizeof($global_set);
-echo "CS number " . $course_count[$dept];
-echo "total course number " . $course_number;
-$P_SPAM_  = $course_count[$dept]/$course_number; 
-echo "P(CS) " . $P_SPAM_;
-echo "C++ number" . $subject[$dept][$query];
-echo "CS words number" . $dept_words[$dept];
-$P_BFS_CS = $subject[$dept][$query] / $dept_words[$dept];
-echo "P(BFS/CS) " . $P_BFS_CS;
+$query = "machine learning is good";
+$k = 1;
+$queries = preg_split("/[^a-z\-]+/", strtolower($query));
+$denominator = 0;
+$MAP_dept = "";
+$MAP_value = 0;
+$x_dept = sizeof($course_count);
+echo "<br/>";
+echo $x_dept;
+echo "<br/>";
+$x_words = sizeof($global_set);
+echo "size of vocabulary " . $x_words;
+foreach ($course_count as $dept=>$dept_course_num) {
+    //echo "size of vocabulary " . sizeof($global_set);
+    //echo $dept . " number " . $dept_course_num;
+    //echo "total course number " . $course_number;
+    $P_CS  = ($dept_course_num + $k)/($course_number + $k * $x_dept); 
+    //echo "P(" . $dept . ") " . $P_CS;
+    //echo $query . " number" . $subject[$dept][$query];
+    //echo $dept . " words number" . $dept_words[$dept];
+    $P_BFS_CS = 1;
+    foreach($queries as $query_word) {
+        $P_BFS_CS = $P_BFS_CS * ($subject[$dept][$query_word] + $k) / ($dept_words[$dept] + $k * $x_words);
+    }
+    echo "<br/>";
+    echo "P(" . $query . "|" . $dept . ")=" . $P_BFS_CS;
+    $P_BFS_CS_P_CS = $P_BFS_CS * $P_CS;
+    if ($P_BFS_CS_P_CS > $MAP_value) {
+        $MAP_dept = $dept;
+        $MAP_value = $P_BFS_CS_P_CS;
+    }
+    $denominator = $denominator + $P_BFS_CS_P_CS;
+    echo " P(" . $query . "|" . $dept . ")*P(" . $dept . ")=" . $P_BFS_CS_P_CS;
+    echo "<br/>";
+}
+echo $denominator;
+echo "<br/>";
+echo $MAP_dept;
+echo "<br/>";
+echo $MAP_value/$denominator;
+echo "<br/>";
 
 //$word_map = array();
 //$nouse = array();
