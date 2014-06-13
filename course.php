@@ -16,7 +16,7 @@ while($row = mysqli_fetch_array($result)) {
     $description = $row['course_desc'];
     preg_match('/^[A-Z]+/', $course, $matches);
     $keyword = $matches[0];
-    echo $keyword;
+    //echo $keyword;
     //echo $course . $description;
     if (array_key_exists($keyword, $subject)) {
         $subject[$keyword] = $subject[$keyword] . " " . $description;

@@ -47,7 +47,7 @@ while($row = mysqli_fetch_array($result)) {
         //echo $word . " " . $global_set[$word] . " " . $subject[$dept][$word] . " ";
     }
 }
-$query = "machine learning is good";
+$query = "machine learing is good, I like programming";
 $k = 1;
 $queries = preg_split("/[^a-z\-]+/", strtolower($query));
 $denominator = 0;
