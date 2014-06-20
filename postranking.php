@@ -9,7 +9,7 @@ if (mysqli_connect_errno()) {
 }
 
 $subject = array();
-$result = mysqli_query($con, "SELECT course_id, course_desc FROM courses");
+$result = mysqli_query($con, "SELECT course_id, course_desc FROM courses_semester");
 $global_set = array();
 $course_count = array();
 $course_number = 0;

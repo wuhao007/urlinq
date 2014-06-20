@@ -1,7 +1,7 @@
 <?php
 
 // Create connection
-$con=mysqli_connect("localhost", "campusla", "Daisy@007", "campusla_urlinq_beta");
+$con=mysqli_connect("localhost", "campusla", "mArCh3!!1992X", "campusla_urlinq_beta");
 
 // Check connection
 if (mysqli_connect_errno()) {
